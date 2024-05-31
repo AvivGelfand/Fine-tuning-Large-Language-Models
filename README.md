@@ -1,5 +1,6 @@
-# Fine Tuning Large Language Models for Statistical Legal Research
+# Fine-Tuning Large Language Models for Statistical Legal Research
 This repo will present my work for applying fine-tuning methods to build classifiers for labels as part of a broader project in the statistical legal research at the HebrewU, led by [Dr. Adi Leibovitch](https://en.law.huji.ac.il/people/adi-leibovitch).
+
 ## Introduction
 As part of a broad research project on the biases of judges during criminal law, 30k texts of defendants to the judge were collected and tagged manually during the years 2019-2021. The way of labeling during that time was by alternating teams of students who manually went through each text
 and labeled the main types of arguments by the following list:
@@ -22,7 +23,10 @@ classification task.
 Outputting the logits, the probabilistic predictions of the model, ranging between \[0, 1\].
 Learning and correcting wrong labeling according to the differences between the model and the ground-truth labeling.
 
-# Poster presented in the [Annual ISDSA Conference 2024](https://statistics.org.il/conferences-events/%d7%94%d7%a8%d7%a9%d7%9e%d7%94-%d7%9c%d7%9b%d7%a0%d7%a1-%d7%94%d7%a9%d7%a0%d7%aa%d7%99-%d7%a9%d7%9c-%d7%94%d7%90%d7%99%d7%92%d7%95%d7%93-2024/)
+# Results:
+Over 90% accuracy in all labels, over 80% F1 scores in most labels, and labeling error corrections. 
+
+## Poster presented in the [Annual ISDSA Conference 2024](https://statistics.org.il/conferences-events/%d7%94%d7%a8%d7%a9%d7%9e%d7%94-%d7%9c%d7%9b%d7%a0%d7%a1-%d7%94%d7%a9%d7%a0%d7%aa%d7%99-%d7%a9%d7%9c-%d7%94%d7%90%d7%99%d7%92%d7%95%d7%93-2024/)
 
 ![WhatsApp Image 2024-05-30 at 17 09 48_0de412db-fotor-2024053018102](https://github.com/AvivGelfand/Fine-tuning-Large-Language-Models/assets/63909805/4f9ba52e-80b3-4ffe-a338-209d508b0cf9)
 
