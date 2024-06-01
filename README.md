@@ -2,6 +2,36 @@
 
 This repository presents my work on applying fine-tuning methods to build classifiers for labels as part of a broader project in statistical legal research collaboration led by [Dr. Adi Leibovitch](https://en.law.huji.ac.il/people/adi-leibovitch) and [Sharon Levy](https://www.linkedin.com/in/sharon-levy-b1aa85218/) from The Hebrew University of Jerusalem Faculty of Law, [Prof. J.J.](https://www.linkedin.com/in/jjprescott1/?lipi=urn%3Ali%3Apage%3Ad_flagship3_detail_base%3BMpyPu6TjQq2jpqFKPt9ZQw%3D%3D) Prescott and Grady Bridges from the University of Michigan Law School. 
 
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Objective](#objective)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Work-Flow](#work-flow)
+    1. [Efficient Sampling](#efficient-sampling)
+    2. [Fine-Tuning LLMs](#fine-tuning-llms)
+        1. [Step 1: Initialize the Tokenizer](#step-1-initialize-the-tokenizer)
+        2. [Step 2: Define the Tokenization Function](#step-2-define-the-tokenization-function)
+        3. [Step 3: Apply the Tokenizer to the Datasets](#step-3-apply-the-tokenizer-to-the-datasets)
+        4. [Step 4: Map Labels to Tokenized Datasets](#step-4-map-labels-to-tokenized-datasets)
+        5. [Step 5: Initialize Telegram Bot for Notifications](#step-5-initialize-telegram-bot-for-notifications)
+        6. [Step 6: Set Model Name and Output Directory](#step-6-set-model-name-and-output-directory)
+        7. [Step 7: Find the Last Checkpoint](#step-7-find-the-last-checkpoint)
+        8. [Step 8: Configure Model Quantization](#step-8-configure-model-quantization)
+        9. [Step 9: Load and Configure the Model](#step-9-load-and-configure-the-model)
+        10. [Step 10: Configure PEFT](#step-10-configure-peft)
+        11. [Step 11: Define Training Arguments](#step-11-define-training-arguments)
+        12. [Step 12: Initialize Data Collator](#step-12-initialize-data-collator)
+        13. [Step 13: Initialize Trainer](#step-13-initialize-trainer)
+        14. [Step 14: Define and Add SaveScoreCallback](#step-14-define-and-add-savescorecallback)
+        15. [Step 15: Train the Model](#step-15-train-the-model)
+        16. [Step 16: Notify via Telegram Bot](#step-16-notify-via-telegram-bot)
+    3. [Inference](#inference)
+6. [Results](#results)
+7. [Contribution and Feedback](#contribution-and-feedback)
+8. [Acknowledgements](#acknowledgements)
+
 ## Introduction
 
 As part of a broad research project on the biases of judges in criminal law, a **dataset of 30k texts from defendants to judges** was collected and **labeled manually during the years 2019-2021**. 
