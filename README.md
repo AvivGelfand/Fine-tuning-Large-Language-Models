@@ -25,11 +25,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-To fine-tune the models, run the following command:
-
-```bash
-python fine_tune.py --model llama-2-7b --data_path ./data/dataset.csv --output_dir ./models/llama-2-7b
-```
+To fine-tune the models, open the notebooks, load your data, and then run all the cells.
 
 ## Work-Flow
 
