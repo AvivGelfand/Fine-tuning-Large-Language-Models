@@ -1,6 +1,6 @@
 # Fine-Tuning Large Language Models for Statistical Legal Research
 
-This repository presents my ([Aviv Gelfand](https://www.linkedin.com/in/aviv-gelfand/)) work on applying fine-tuning methods to build classifiers for labels as part of a broader project in statistical legal research collaboration led by [Dr. Adi Leibovitch](https://en.law.huji.ac.il/people/adi-leibovitch) and [Sharon Levy](https://www.linkedin.com/in/sharon-levy-b1aa85218/) from The Hebrew University of Jerusalem Faculty of Law, [Prof. J.J.Prescott](https://www.linkedin.com/in/jjprescott1/?lipi=urn%3Ali%3Apage%3Ad_flagship3_detail_base%3BMpyPu6TjQq2jpqFKPt9ZQw%3D%3D)  and [Grady Bridges](https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=3535691) from the University of Michigan Law School. 
+This repository presents my ([Aviv Gelfand](https://www.linkedin.com/in/aviv-gelfand/)) work on applying supervised fine-tuning (SFT) methods to build classifiers for labels as part of a broader project in statistical legal research collaboration led by [Dr. Adi Leibovitch](https://en.law.huji.ac.il/people/adi-leibovitch) and [Sharon Levy](https://www.linkedin.com/in/sharon-levy-b1aa85218/) from The Hebrew University of Jerusalem Faculty of Law, [Prof. J.J.Prescott](https://www.linkedin.com/in/jjprescott1/?lipi=urn%3Ali%3Apage%3Ad_flagship3_detail_base%3BMpyPu6TjQq2jpqFKPt9ZQw%3D%3D)  and [Grady Bridges](https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=3535691) from the University of Michigan Law School. 
 
 ## Introduction
 
