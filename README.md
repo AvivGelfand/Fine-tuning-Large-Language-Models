@@ -31,9 +31,80 @@ To fine-tune the models, open the notebooks, load your data, and then run all th
 
 After standard cleaning processes, the following stages were carried out iteratively for each label:
 
-### 1. Efficient Sampling
+### 1. Efficient Train-Test Split with Stratified Sampling by TF-IDF Cluster
 
-**Stratified Sampling** was performed by label cardinality and association with a **TF-IDF** (Term Frequency-Inverse Document Frequency) cluster. This ensures balanced and representative samples for training.
+The task **complexity was substantially** reduced by performing efficient train-test splitting using stratified sampling based on TF-IDF clusters. By clustering the data using K-Means on TF-IDF vectors, we ensure that more of the distribution space is maintained across the training, validation, and test sets, optimizing the training results for a classification task. Hence each train, validation, and test set is much more representative of the label space.
+
+This script performs a stratified train-test split using TF-IDF vectorization and KMeans clustering. This method ensures that the distribution of clusters is maintained across the training, validation, and test sets, optimizing the training results for a classification task.
+
+## Here is how to apply this trick to your data:
+
+a. **Import Libraries:**
+    ```python
+    from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+    from sklearn.cluster import KMeans
+    from sklearn.model_selection import train_test_split
+    import pandas as pd
+    ```
+
+b. **Read the Data:**
+    ```python
+    full_data_path = f"/content/drive/MyDrive/EDA_labeled_cleaned_data.csv"
+    df = pd.read_csv(full_data_path)
+    ```
+    - Load the dataset into a data frame from the specified path.
+
+c. **TF-IDF Vectorization:**
+    ```python
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(df['text'])
+    ```
+    - Transform the text data into TF-IDF features for clustering.
+
+d. **KMeans Clustering:**
+    ```python
+    k_param = 40
+    kmeans = KMeans(n_clusters=k_param, random_state=0, n_init='auto')
+    kmeans.fit(X)
+    labels = kmeans.predict(X)
+    ```
+    - Initialize and fit a KMeans model with `k_param` clusters.
+    - Predict cluster labels for each document.
+
+e. **Add Cluster Labels to DataFrame:**
+    ```python
+    df[f'TFIDFKmeans_{k_param}_cluster'] = labels
+    ```
+    - Append the cluster labels to the DataFrame.
+
+f. **Create Stratification Labels:**
+    ```python
+    label = "LABEL_COL_NAME"
+    df['stratify_label'] = df[label].astype(str) + "_" + df[f'TFIDFKmeans_{k_param}_cluster'].astype(str)
+    ```
+    - Combine the original label with the cluster labels to create stratification labels.
+
+g. **Handle Single Occurrences:**
+    ```python
+    value_counts = df['stratify_label'].value_counts()
+    single_occurrences = value_counts[value_counts <= 4].index.tolist()
+    df[f'stratify_label_{label}'] = df['stratify_label'].apply(lambda x: 'other' if x in single_occurrences else x)
+    ```
+    - Identify and handle stratification labels that occur infrequently to avoid bias.
+
+h. **Train-Test Split:**
+    ```python
+    train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df[f'stratify_label_{label}'])
+    ```
+    - Split the data into training and test sets, stratified by the created stratification labels.
+
+i. **Train-Validation Split:**
+    ```python
+    train_df, val_df = train_test_split(train_df, test_size=0.25, random_state=42, stratify=train_df[f'stratify_label_{label}'])
+    ```
+    - Further split the training data into training and validation sets, ensuring stratification.
+
+This approach ensures that the splits maintain the distribution of both the original labels and the derived clusters, which can lead to more robust and representative training and evaluation of distilled language models.
 
 ### 2. Fine-Tuning LLMs
 
