@@ -33,9 +33,14 @@ After standard cleaning processes, the following stages were carried out iterati
 
 ### 1. Efficient Train-Test Split with Stratified Sampling by TF-IDF Cluster
 
-The task **complexity was substantially** reduced by performing efficient train-test splitting using stratified sampling based on TF-IDF clusters. By clustering the data using K-Means on TF-IDF vectors, we ensure that more of the distribution space is maintained across the training, validation, and test sets, optimizing the training results for a classification task. Hence each train, validation, and test set is much more representative of the label space.
+The task **complexity was substantially** reduced by performing efficient train-test splitting using stratified sampling based on TF-IDF clusters.
 
-This script performs a stratified train-test split using TF-IDF vectorization and KMeans clustering. This method ensures that the distribution of clusters is maintained across the training, validation, and test sets, optimizing the training results for a classification task.
+*Stratified Sampling* is a sampling method designed to ensure that subgroups (or strata) within the population are adequately represented in the sample.
+The definition of the subgroups is according to simple clusters of the vector representation according to the  K-Means on TF-IDF vectors of the texts + concatenation of the label type.
+
+So, when I split the data to train, test, and validate sets, I preserved a more accurate representation of the label space in each set.
+
+Performance and accuracy improved, and runtime went from hours with Llama to 10 minutes with DistillBERT
 
 #### Here is how to apply this trick to your data:
 
