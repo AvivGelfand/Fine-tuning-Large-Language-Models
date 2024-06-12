@@ -37,9 +37,10 @@ The task **complexity was substantially** reduced by performing efficient train-
 
 This script performs a stratified train-test split using TF-IDF vectorization and KMeans clustering. This method ensures that the distribution of clusters is maintained across the training, validation, and test sets, optimizing the training results for a classification task.
 
-## Here is how to apply this trick to your data:
+#### Here is how to apply this trick to your data:
 
-a. **Import Libraries:**
+1. **Import Libraries:**
+
     ```python
     from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
     from sklearn.cluster import KMeans
@@ -47,23 +48,23 @@ a. **Import Libraries:**
     import pandas as pd
     ```
 
-b. **Read the Data:**
+2. **Read the Data:**
     ```python
     full_data_path = f"/content/drive/MyDrive/EDA_labeled_cleaned_data.csv"
     df = pd.read_csv(full_data_path)
     ```
     - Load the dataset into a data frame from the specified path.
 
-c. **TF-IDF Vectorization:**
+3. **TF-IDF Vectorization:**
     ```python
     vectorizer = TfidfVectorizer()
     X = vectorizer.fit_transform(df['text'])
     ```
     - Transform the text data into TF-IDF features for clustering.
 
-d. **KMeans Clustering:**
+4. **KMeans Clustering:**
     ```python
-    k_param = 40
+    k_param = 40 # adjust this parameter to what seems to work best on your data set
     kmeans = KMeans(n_clusters=k_param, random_state=0, n_init='auto')
     kmeans.fit(X)
     labels = kmeans.predict(X)
@@ -71,20 +72,45 @@ d. **KMeans Clustering:**
     - Initialize and fit a KMeans model with `k_param` clusters.
     - Predict cluster labels for each document.
 
-e. **Add Cluster Labels to DataFrame:**
+5. **Add Cluster Labels to DataFrame:**
     ```python
-    df[f'TFIDFKmeans_{k_param}_cluster'] = labels
+    df[f'TFIDFKmeans_{k_param}_cluster'] = labels 
     ```
     - Append the cluster labels to the DataFrame.
 
-f. **Create Stratification Labels:**
+
+6. **Create Combined Stratification Labels:** <br>
+*This step is crucial (!)* for ensuring that our train-test split maintains the distribution of both the original labels and the clusters identified by KMeans.
     ```python
     label = "LABEL_COL_NAME"
     df['stratify_label'] = df[label].astype(str) + "_" + df[f'TFIDFKmeans_{k_param}_cluster'].astype(str)
     ```
-    - Combine the original label with the cluster labels to create stratification labels.
+    We can break it down to:
+    - **Convert to String:**
+        - `df[label].astype(str)`: Converts the values in the original label column to strings. This is necessary because we will concatenate these values with the cluster labels, which are also converted to strings.
+        - `df[f'TFIDFKmeans_{k_param}_cluster'].astype(str)`: Converts the KMeans cluster labels to strings.
+          
+    - **Concatenate Strings:**
+        - The `+ "_" +` part combines the original label and the cluster label with an underscore (`_`) in between. This creates a new composite label that includes information from the original class label and the cluster assignment.
+    
+    - **Create New Column:**
+        - `df['stratify_label']`: This new column in the DataFrame now contains these combined labels.
 
-g. **Handle Single Occurrences:**
+The purpose of creating this `stratify_label` is to use it for stratified sampling. Combining the original labels with the cluster labels ensures that the train-test split **maintains the distribution of both the original class labels and the clusters***.
+
+#### Example:
+Suppose your original label column has values like `0` and `1`, and the KMeans clustering assigned cluster numbers 0 through 39 (since `k_param = 40`). The combined `stratify_label` might look like this:
+
+| Original Label | Cluster Label | Combined Stratify Label |
+|----------------|---------------|-------------------------|
+| 1              | 5             | 1_5                     |
+| 0              | 12            | 0_12                    |
+| 1              | 3             | 1_3                     |
+| 1              | 12            | 1_12                    |
+
+By using these combined labels for stratification, we ensure that the splits we create will be representative of the overall data distribution in terms of both original labels and cluster assignments.
+
+8. **Handle Single Occurrences:**
     ```python
     value_counts = df['stratify_label'].value_counts()
     single_occurrences = value_counts[value_counts <= 4].index.tolist()
@@ -92,13 +118,13 @@ g. **Handle Single Occurrences:**
     ```
     - Identify and handle stratification labels that occur infrequently to avoid bias.
 
-h. **Train-Test Split:**
+9. **Train-Test Split** (optional):
     ```python
     train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df[f'stratify_label_{label}'])
     ```
     - Split the data into training and test sets, stratified by the created stratification labels.
 
-i. **Train-Validation Split:**
+10. **Train-Validation Split:**
     ```python
     train_df, val_df = train_test_split(train_df, test_size=0.25, random_state=42, stratify=train_df[f'stratify_label_{label}'])
     ```
