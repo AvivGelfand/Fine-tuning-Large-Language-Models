@@ -36,7 +36,7 @@ After standard cleaning processes, the following stages were carried out iterati
 The task **complexity was substantially** reduced by performing efficient train-test splitting using stratified sampling based on TF-IDF clusters.
 
 *Stratified Sampling* is a sampling method designed to ensure that subgroups (or strata) within the population are adequately represented in the sample.
-The definition of the subgroups is according to simple clusters of the vector representation according to the  K-Means on TF-IDF vectors of the texts + concatenation of the label type.
+The definition of the subgroups is according to simple K-Means clusters of the vector representation according to the TF-IDF vectorizer of the texts + concatenation of the label type.
 
 So, when I split the data to train, test, and validate sets, I preserved a more accurate representation of the label space in each set.
 
