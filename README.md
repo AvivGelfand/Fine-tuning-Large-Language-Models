@@ -100,7 +100,7 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
    We can break it down to:
    
  1. **Convert to String:**
-     - `df[label].astype(str)`: Converts the values in the original label column to strings. This is necessary because we will concatenate these values with the cluster labels, which are also converted to strings.
+     - `df[label_name].astype(str)`: Converts the values in the original label column to strings. This is necessary because we will concatenate these values with the cluster labels, which are also converted to strings.
      - `df[f'TFIDFKmeans_{k_param}_cluster'].astype(str)`: Converts the KMeans cluster labels to strings.
        
  2. **Concatenate Strings:**
@@ -131,23 +131,27 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
  ```python
  value_counts = df['stratify_label'].value_counts()
  single_occurrences = value_counts[value_counts <= 4].index.tolist()
- df[f'stratify_label_{label}'] = df['stratify_label'].apply(lambda x: 'other' if x in single_occurrences else x)
+ df[f'stratify_label'] = df['stratify_label'].apply(lambda x: 'other' if x in single_occurrences else x)
  ```
     
     - Identify and handle stratification labels that occur infrequently to avoid bias.
 
-9. **Train-Test Split** (optional):
+9. **Train-Test Split:**
 
 ```python
-train_df, test_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df[f'stratify_label_{label}'])
+train_df, test_df = train_test_split(
+   df, test_size=0.2, random_state=42, # the conventional params
+   stratify=df[f'stratify_label'] # using the stratify param
+)
 ```
    
  - Split the data into training and test sets, stratified by the created stratification labels.
 
-11. **Train-Validation Split:**
+11. **Train-Validation Split** (optional):
     
  ```python
- train_df, val_df = train_test_split(train_df, test_size=0.25, random_state=42, stratify=train_df[f'stratify_label_{label}'])
+ train_df, val_df = train_test_split(train_df, test_size=0.25, random_state=42,
+ stratify=train_df[f'stratify_label'])
  ```
 
    - Further split the training data into training and validation sets, ensuring stratification.
@@ -156,7 +160,7 @@ This approach ensures that the splits maintain the distribution of both the orig
 
 ### 2. Fine-Tuning LLMs
 
-Supervised Fine-Tuning (**SFT**) was conducted on various language models, including **LLama-2-7B**, DistillBERT, and Roberta, for label classification tasks.
+*Supervised Fine-Tuning* (**SFT**) was conducted for the label classification task on various language models, including **LLama-2-7B**, DistillBERT, and Roberta.
 
 #### Code Example for Fine-Tuning LLMs:
 
