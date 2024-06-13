@@ -1,5 +1,7 @@
 # Fine-Tuning Large Language Models for Statistical Legal Research
 
+
+   
 This repository presents my ([Aviv Gelfand](https://www.linkedin.com/in/aviv-gelfand/)) work on applying supervised fine-tuning (SFT) methods to build classifiers for labels as part of a broader project in statistical legal research collaboration led by [Dr. Adi Leibovitch](https://en.law.huji.ac.il/people/adi-leibovitch) and [Sharon Levy](https://www.linkedin.com/in/sharon-levy-b1aa85218/) from The Hebrew University of Jerusalem Faculty of Law, [Prof. J.J.Prescott](https://www.linkedin.com/in/jjprescott1/?lipi=urn%3Ali%3Apage%3Ad_flagship3_detail_base%3BMpyPu6TjQq2jpqFKPt9ZQw%3D%3D)  and [Grady Bridges](https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=3535691) from the University of Michigan Law School. 
 
 ## Introduction
@@ -74,7 +76,7 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
     kmeans.fit(X)
     labels = kmeans.predict(X)
     ```
-    - Initialize and fit a KMeans model with `k_param` clusters.
+    - Initialize and fit a KMeans model with `k_param` clusters, representing the $K$ number of centroids / clusters.
     - Predict cluster labels for each document.
 
 5. **Add Cluster Labels to DataFrame:**
@@ -82,7 +84,6 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
     df[f'TFIDFKmeans_{k_param}_cluster'] = labels 
     ```
     - Append the cluster labels to the DataFrame.
-
 
 6. **Create Combined Stratification Labels:** <br>
 *This step is crucial (!)* for ensuring that our train-test split maintains the distribution of both the original labels and the clusters identified by KMeans.
@@ -101,19 +102,22 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
     - **Create New Column:**
         - `df['stratify_label']`: This new column in the DataFrame now contains these combined labels.
 
-The purpose of creating this `stratify_label` is to use it for stratified sampling. Combining the original labels with the cluster labels ensures that the train-test split **maintains the distribution of both the original class labels and the clusters***.
+    The purpose of creating this `stratify_label` is to use it for stratified sampling. Combining the original labels with the cluster labels ensures that the train-test split **maintains the distribution of both the original class labels and the clusters**.
+    Then, we have resulted in the `stratify_label` column being of the size $|\text{labelspace} | \times k$, where $k$ is the number of clusters.
 
-#### Example:
-Suppose your original label column has values like `0` and `1`, and the KMeans clustering assigned cluster numbers 0 through 39 (since `k_param = 40`). The combined `stratify_label` might look like this:
+    #### Example:
+    Suppose your original label column has values like `0` and `1`, and the KMeans clustering assigned cluster numbers 0 through 39 (since `k_param = 40`). The `stratify_label` sample space would have the norm of $80=40*2=k\times|labelspace|$.
 
-| Original Label | Cluster Label | Combined Stratify Label |
-|----------------|---------------|-------------------------|
-| 1              | 5             | 1_5                     |
-| 0              | 12            | 0_12                    |
-| 1              | 3             | 1_3                     |
-| 1              | 12            | 1_12                    |
-
-By using these combined labels for stratification, we ensure that the splits we create will be representative of the overall data distribution in terms of both original labels and cluster assignments.
+    The following table showcases that as follows:
+    
+    | Original Label | Cluster Label | Combined Stratify Label |
+    |----------------|---------------|-------------------------|
+    | 1              | 5             | 1_5                     |
+    | 0              | 12            | 0_12                    |
+    | 1              | 3             | 1_3                     |
+    | 1              | 12            | 1_12                    |
+    
+    By using these combined labels for stratification, we ensure that the splits we create will be representative of the overall data distribution in terms of both original labels and cluster assignments.
 
 8. **Handle Single Occurrences:**
     ```python
