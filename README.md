@@ -35,7 +35,7 @@ After standard cleaning processes, the following stages were carried out iterati
 
 ### 1. Efficient Train-Test Split with Stratified Sampling by TF-IDF Cluster
 
-The task **complexity was substantially** reduced by performing efficient train-test splitting using stratified sampling based on TF-IDF clusters.
+The task **complexity was substantially** reduced by performing efficient train-test splitting using stratified sampling based on [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) (Term Frequency - Inverse Document Frequency) clusters.
 
 *Stratified Sampling* is a sampling method designed to ensure that subgroups (or strata) within the population are adequately represented in the sample.
 The definition of the subgroups is according to simple K-Means clusters of the vector representation according to the TF-IDF vectorizer of the texts + concatenation of the label type.
