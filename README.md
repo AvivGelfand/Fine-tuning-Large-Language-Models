@@ -84,10 +84,10 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
 
 6. **Add Cluster Labels to DataFrame:**
 
-   ```python
-    df[f'TFIDFKmeans_{k_param}_cluster'] = labels 
-    ```
-    - Append the cluster labels to the DataFrame.
+```python
+ df[f'TFIDFKmeans_{k_param}_cluster'] = labels 
+ ```
+ - Append the cluster labels to the DataFrame.
 
 7. **Create Combined Stratification Labels:** <br>
    *This step is crucial (!)* for ensuring that our train-test split maintains the distribution of both the original labels and the clusters identified by KMeans.
@@ -99,32 +99,32 @@ Performance and accuracy improved, and runtime went from hours with Llama to 10 
    
    We can break it down to:
    
- 1. **Convert to String:**
+  1. **Convert to String:**
      - `df[label_name].astype(str)`: Converts the values in the original label column to strings. This is necessary because we will concatenate these values with the cluster labels, which are also converted to strings.
      - `df[f'TFIDFKmeans_{k_param}_cluster'].astype(str)`: Converts the KMeans cluster labels to strings.
        
- 2. **Concatenate Strings:**
+  2. **Concatenate Strings:**
      - The `+ "_" +` part combines the original label and the cluster label with an underscore (`_`) in between. This creates a new composite label that includes information from the original class label and the cluster assignment.
  
- 3. **Create New Column:**
+  3. **Create New Column:**
      - `df['stratify_label']`: This new column in the DataFrame now contains these combined labels.
 
-    The purpose of creating this `stratify_label` is to use it for stratified sampling. Combining the original labels with the cluster labels ensures that the train-test split **maintains the distribution of both the original class labels and the clusters**.
-    Then, we have resulted in the `stratify_label` column being of the size $|\text{labelspace} | \times k$, where $k$ is the number of clusters.
+     The purpose of creating this `stratify_label` is to use it for stratified sampling. Combining the original labels with the cluster labels ensures that the train-test split **maintains the distribution of both the original class labels and the clusters**.
+     Then, we have resulted in the `stratify_label` column being of the size $|\text{labelspace} | \times k$, where $k$ is the number of clusters.
 
-    #### Example:
-    Suppose your original label column has values like `0` and `1`, and the KMeans clustering assigned cluster numbers 0 through 39 (since `k_param = 40`). The `stratify_label` sample space would have the norm of $80=40*2=k\times|labelspace|$.
+     #### Example:
+     Suppose your original label column has values like `0` and `1`, and the KMeans clustering assigned cluster numbers 0 through 39 (since `k_param = 40`). The `stratify_label` sample space would have the norm of $80=40*2=k\times|labelspace|$.
 
-    The following table showcases that as follows:
+     The following table showcases that as follows:
  
-    | Original Label | Cluster Label | Combined Stratify Label |
-    |----------------|---------------|-------------------------|
-    | 1              | 5             | 1_5                     |
-    | 0              | 12            | 0_12                    |
-    | 1              | 3             | 1_3                     |
-    | 1              | 12            | 1_12                    |
- 
-    By using these combined labels for stratification, we ensure that the splits we create will be representative of the overall data distribution in terms of both original labels and cluster assignments.
+      | Original Label | Cluster Label | Combined Stratify Label |
+      |----------------|---------------|-------------------------|
+      | 1              | 5             | 1_5                     |
+      | 0              | 12            | 0_12                    |
+      | 1              | 3             | 1_3                     |
+      | 1              | 12            | 1_12                    |
+    
+      By using these combined labels for stratification, we ensure that the splits we create will be representative of the overall data distribution in terms of both original labels and cluster assignments.
 
 8. **Handle Single Occurrences:**
 
